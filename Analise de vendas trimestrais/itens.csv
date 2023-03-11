@@ -1,0 +1,51 @@
+produto_id;Produtos; valor_unit 
+1; Smartphone; R$ 800,00 
+2; Laptop; R$ 1.000,00 
+3; Tablet; R$ 400,00 
+4; Câmera; R$ 800,00 
+5; Headphone; R$ 200,00 
+6; Fone de ouvido; R$ 100,00 
+7; Relógio inteligente; R$ 300,00 
+8; Microfone; R$ 150,00 
+9; Drone; R$ 800,00 
+10; Carregador sem fio; R$ 50,00 
+11; Bateria externa; R$ 70,00 
+12; Teclado sem fio; R$ 70,00 
+13; Mouse sem fio; R$ 50,00 
+14; Jogo de ferramentas; R$ 100,00 
+15; Tábua de corte; R$ 30,00 
+16; Fogão; R$ 500,00 
+17; Liquidificador; R$ 100,00 
+18; Ferro de passar roupa; R$ 70,00 
+19; Aspirador de pó; R$ 200,00 
+20; Ferro de corte; R$ 100,00 
+21; Pia de cozinha; R$ 300,00 
+22; Torradeira; R$ 50,00 
+23; Cafeteira; R$ 100,00 
+24; Forno de micro-ondas; R$ 150,00 
+25; Lâmpada LED; R$ 20,00 
+26; Extensor de Wi-Fi; R$ 70,00 
+27; Repetidor de sinal; R$ 80,00 
+28; Dispositivo de streaming; R$ 200,00 
+29; Barra de som; R$ 300,00 
+30; Subwoofer; R$ 150,00 
+31; Projetor; R$ 600,00 
+32; Controle remoto universal; R$ 30,00 
+33; Roteador; R$ 100,00 
+34; Switch; R$ 70,00 
+35; Modem; R$ 80,00 
+36; Gravador de voz; R$ 50,00 
+37; Gravador de vídeo; R$ 150,00 
+38; Caixa de som; R$ 200,00 
+39; Caixa de som portátil; R$ 100,00 
+40; Adaptador HDMI; R$ 30,00 
+41; Cabo HDMI; R$ 20,00 
+42; Cabo USB; R$ 10,00 
+43; Cabo Ethernet; R$ 20,00 
+44; Adaptador de corrente; R$ 30,00 
+45; Fonte de alimentação; R$ 50,00 
+46; Carregador de parede; R$ 20,00 
+47; Carregador de carro; R$ 30,00 
+48; Bateria recarregável; R$ 20,00 
+49; Conector lightning; R$ 10,00 
+50; Conector USB tipo C; R$ 15,00 
