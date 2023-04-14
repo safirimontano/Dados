@@ -1,226 +1,238 @@
-# CRUD SQL server
- 
-Nesse repositório você encontrará um CRUD (Create, Read, Update and delete) e outros comandos SQL para Microsoft SQL Server feitos com informaçõees de pilotos de fórmula 1 com algumas alterações. 
-O arquivo contem a base de dados para que sejam realizadas as consultas. 
-Ao final será disponibilizado um dicionário PT-EN além de uma visualização de dashboard em PowerBi que foi realizada utilizando a base de dados de exemplo. 
+#  Exercicios SQL 
 
-*In this repository you will find a CRUD (Create, Read, Update and Delete) and other SQL commands for Microsoft SQL Server made with information from formula 1 drivers with some changes.The file contains the database for queries.
-At the end, a PT-EN dictionary will be made available, in addition to a dashboard view in PowerBi that was performed using the example database.*
+Especificação fictícia:  
+A Softblue (www.softblue.com.br) está contratando você como DBA (Database Administrator) para que você crie um banco de dados para gerenciar as matrículas dos alunos da Softblue. Neste banco de dados deverá estar armazenado as informações dos cursos disponibilizados pela Softblue, como nome, tipo (se é de banco de dados, programação ou outro), preço e os dados do instrutor responsável pelo curso (nome e telefone). 
+Neste mesmo banco de dados deve ser armazenado as informações dos alunos da Softblue (nome, endereço e e-mail) bem como todos os cursos que o aluno já se matriculou. 
+Leve em consideração que todas as informações dos alunos, cursos e instrutores poderão ser alteradas a qualquer tempo. Popule as tabelas criadas com alguns exemplos fictícios. Todas as chaves estrangeiras apresentadas neste exemplo são consideradas índices.  
 
-## Dicas de uso 
-Para conseguir realizar as QUErys é necessário que comece pelo passo 1 e 4 onde você irá criar e inserir valores em uma tabela. 
-A legenda PT-EN se encontra no final da página para que haja melhor compreenção de nomes de colunas.
+## *Exercicio 1 
 
-## Usage tips
-In order to be able to carry out the QUErys it is necessary to start with step 1 and 4 where you will create and insert values in a table.
-The PT-EN caption is at the bottom of the page for better understanding of column names.
-
-## Passo a passo com imagens dos resultados esperados
-(Step by step with images of expected results)
-
-**1. Criar duas tabelas uma com 7 colunas e outra com apenas uma.**
-
-*Create two tables, one with 7 columns and other with only one.*
-
-
-```SQL
-CREATE TABLE PILOTOS
-  (
-    PILOTOID INT IDENTITY (1,1) PRIMARY KEY,
-    NOME VARCHAR(25),
-    SOBRENOME VARCHAR(20),
-    NACIONALIDADE VARCHAR(20),
-    NASCIMENTO DATE,
-    SALARIO INT,
-    BONUS INT,
-  );
-```
-
-```SQL
-CREATE TABLE PILOTOS2
-  (
-    PILOTOID INT identity (1,1) FOREIGN KEY REFERENCES PILOTOS(PILOTOID),
-    EQUIPE VARCHAR (30)
-  );
-  ```
-  
- **2. O tipo da coluna 'SALARIO' deverá ser alterada para DECIMAL**
- 
- *The type of column 'SALARIO' must be changed to DECIMAL*
-  
- ```SQL
- ALTER TABLE PILOTOS
- ALTER COLUMN SALARIO DECIMAL(10,2)
- ```
- 
- **3. Será alterado o nome de uma coluna afim de economizar espaço. 'NASCIMENTO' para 'NASC'.**
- 
- *A column name will be changed in order to save space. 'NASCIMENTO' to 'NASC'.*
- 
-```SQL 
- EXEC sp_RENAME 'PILOTOS.NASCIMENTO','NASC','COLUMN'
- ```
- 
- **4. Serão inseridos os seguintes dados dados**
- 
- *The following data will be entered*
-    
-
-```SQL
-Insert into PILOTOS (NOME,SOBRENOME,NACIONALIDADE,NASC,SALARIO,BONUS) 
-values ('Kevin', 'Magnussen','Dinamarquês','1992/10/05',6000,1200),
-('Pierre', 'Gasly','Francês','1996/02/07',5000,2200),
-('Charles', 'Leclerc','Monegasco','1997/10/16',12000,4000),
-('Carlos', 'Sainz','Espanhol','1994/09/01',10000,750),
-('Lewis', 'Hamilton','Inglês','1985/01/07',40000,9000),
-('Max', 'Verstappen','Neerlandês','1997/09/30',25000,6570),
-('Sebastian', 'Vettel','Alemão','1987/07/03',15000,990),
-('Fernando', 'Alonso','Espanhol','1981/07/29',20000,6700),
-('Daniel', 'Ricciardo ','Astraliano','1989/07/01',15000,250),
-('Lando', 'Norris ','Astraliano','1999/11/13',20000,97),
-('josé', 'silva','portugues','1111/04/05',9000,NULL);
-```
- 
- ```SQL
- Insert into PILOTOS2 (EQUIPE) VALUES ('Haas'),    
-('AlphaTauri'),
-('Ferrari'),
- ('Ferrari'),  
-('Mercedez'),
-('Redbull'),
-('AstonMartin'), 
- ('Alpine'), 
- ('McLaren'), 
- ('McLaren');
- ```
- 
-**Um SELECT deverá ser feito para conferir os valores inseridos na tabela**
-
-*A SELECT must be done to check the values inserted in the table*
-
-```SQL
-SELECT *FROM PILOTOS	
-select* from PILOTOS2
-```
-<img src="img/SELECT.png" align="center" width="700">
-<img src="img/SELECT 2.png" align="center" width="700">
-
- 
-**5. A linha com ID 11 deverá ser exclui da tabela PILOTOS**
-
-*The line with ID 11 must be excluded from the PILOTOS table*
+### Programe o código SQL necessário para gerar a estrutura do banco de dados.
 
 ```sql
-Delete 
-from PILOTOS
-WHERE pilotoid = 11
+create table aluno(
+aluno_id int unique not null auto_increment,
+nome varchar (20) not null,
+sobrenome varchar (20) not null,
+email varchar (30) not null,
+curso_id int not null,
+primary key (aluno_id),
+constraint fk_aluno_cursos foreign key (curso_id) references curso (curso_id)
+);
+
+create table cursos(
+curso_id int unique not null auto_increment,
+nome varchar (20) not null,
+carga int not null, 
+valor double not null,
+instrutor_id int,
+tipo_id not null,
+primary key (curso_id),
+constraint fk_cursos_instrutor foreign key (instrutor_id) references instrutor(instrutor_id),
+constraint fk_cursos_tipo foreign key (tipo_id) references tipo(tipo_id)
+);
+
+create table tipo(
+tipo_id int unique not null auto_increment,
+tipo varchar (20) not null,
+primary key (tipo_id)
+);
+ 
+create table cursos(
+curso_id int unique not null auto_increment,
+nome varchar (20) not null,
+carga varchar (20) not null,
+valor DOUBLE not null,
+tipo_id int not null,
+instrutor_id int not null,
+primary key (curso_id)
+);
+
+create table instrutor(
+instrutor_id int unique not null auto_increment,
+nome varchar (20) not null,
+telefone varchar (20) not null,
+primary key (instrutor_id)
+);
+```
+### Inclua a coluna DATA_NASCIMENTO na tabela ALUNO do tipo string, de tamanho 10 caracteres; 
+
+```sql 
+ALTER TABLE aluno ADD data_nascimento varchar (10);
 ```
 
-
-**6. Uma visualização unindo todas as informações de PILOTOS e PILOTOS2 foi criada**
-
-*A view uniting all information from PILOTOS and PILOTOS2 was created*
-
-```slq
-select *
-from PILOTOS P1
-JOIN PILOTOS2 P2
-ON P1.PILOTOID=P2.PILOTOID
-```
-
-<img src="img/JOIN.png" align="center" width="700">
-
-**7. É percebido que não se tem um valor único de salário, logo, será calculado o valor total de salário de cada piloto na coluna 'Salário total'**
-
-*The total salary value of each pilot will be calculated in the 'Salário total' column*
+### Altere a coluna DATA_NASCIMENTO para NASCIMENTO e seu tipo de dado para DATE; 
 ```sql
-SELECT NOME, SALARIO + BONUS AS 'Salário total'
-FROM PILOTOS 
+ALTER TABLE aluno MODIFY data_nascimento DATE; 
 ```
-<img src="img/SALARIO_TOTAL.png" align="center" width="700">
 
-**8. A média de salários será calculada na coluna Média salarial**
+### Crie um novo índice na tabela ALUNO, para o campo ALUNO; 
+```sql 
+create index nome on aluno (nome);
+```
 
-*The average salary will be calculated in the Média salarial column*
+### Inclua o campo EMAIL na tabela INSTRUTOR, com tamanho de 100 caracteres; 
 ```sql
-SELECT AVG(salario+bonus) AS 'Média Salarial Total'
-from PILOTOS
+ALTER TABLE instrutor ADD email varchar (100);
 ```
-<img src="img/AVG_SALÁRIO.png" align="center" width="700">
 
-**9. É notado que não se sabe a idade do piloto, apenas sua data de nascimento, logo, será calculada sua data de nascimento.**
-
-*As the age of the pilot is not known, only his date of birth, the date of birth will be calculated.*
+### Remova o campo EMAIL da tabela INSTRUTOR  
 ```sql
-SELECT DATEPART(YEAR,EOMONTH (GETDATE ())) -DATEPART(YEAR,nasc) AS Idade
-FROM PILOTOS 
+ALTER TABLE instrutor DROP COLUMN email;
 ```
-<img src="img/IDADE.png" align="center" width="700">
 
-**10. Para melhor visualização serão concatenados nome e sobrenome.**
+## *Exercicio 2
 
-*For better visualization, NOME and SOBRENOME will be concatenated.*
-
+### Alimente as tabelas com informações 
 ```sql
-SELECT CONCAT(nome, ' ', sobrenome) as 'Nome completo'
-from PILOTOS
+INSERT into tipo (tipo) values ('banco de dados'),('programação'),('modelagem de dados');
+
+insert into instrutor (nome, telefone) values ('André Milani', '1111-1111'),('Carlos Tosin', '1212-1212');
+
+insert into cursos (nome, carga, valor, tipo_id,instrutor_id) values ('Java Fundamentos', 60, 689.87,2,2), ('SQL completo', 20, 689.87,1,2),('Java avançado', 60, 289.89,1,2), ('PHP básico', 50, 322.50,1,1);
+
+insert into aluno (nome, sobrenome, email,curso_id, data_nascimento) values ('José', 'Moraes', 'jose@softblue.com.br',3, '1997-10-25'),
+('Emílio', 'Rodrigues', 'emilio@softblue.com.br',2, '1987-11-25'),
+('Cristian', 'Marques', 'CrisMarques@softblue.com.br',4, '1998-10-29'),
+('Regina', 'Joyce', 'regininha@softblue.com.br',1, '1988-07-15'),
+('Fernando', 'Ursuly', 'Fefeury@softblue.com.br',4, '1999-04-10');
 ```
-
-<img src="img/NOME_COMPLETO.png" align="center" width="700">
-
-**11. Apresentação de nome e sobrenome com idade.**
-
-*Presentation of name and surname with age.*
-
+### Exibir somente o título de cada curso da Softblue;
 ```sql
-SELECT CONCAT(nome, ' ', sobrenome) as 'Nome completo', DATEPART(YEAR,EOMONTH (GETDATE ())) -DATEPART(YEAR,nasc) AS Idade
-FROM PILOTOS 
-```
-
-<img src="img/NOME_IDADE.png" align="center" width="700">
-
-**12. Serão contados quantos pilotos pertencem a mesma nacionalidade.**
-
-*Pilots belonging to the same nationality will be counted.*
-
+select nome from cursos;
+``` 
+#### Exibir somente o título e valor de cada curso cujo preço seja maior que 300;
 ```sql
-SELECT count(nacionalidade),nacionalidade
-FROM PILOTOS
-GROUP BY nacionalidade 
-HAVING COUNT(nacionalidade) > 1
+select nome, valor 
+from cursos
+where valor > 300;
+```
+### Exibir somente o título e valor de cada curso da Softblue cujo preço seja maior que 300 e menor que 600;
+```sql
+select nome, valor 
+from cursos
+where valor > 300 and valor < 600;
+```
+### Altere o e-mail do aluno Cristian para 'cristinin@gmail.com';
+```
+UPDATE aluno SET email = 'cristinin@gmail.com' WHERE aluno_id = 3;
+```
+### Aumente em 10% o valor dos cursos abaixo de 300;
+```sql
+UPDATE cursos SET valor = valor * 0.1 
+where valor < 300;
+``` 
+### Altere o nome do curso de Php Básico para Php Fundamentos;
+```sql
+UPDATE cursos SET nome = 'PHP fundamentos' where curso_id = 4;
 ```
 
-<img src="img/NACIONALIDADE_REPETIDA.png" align="center" width="700">
+## *Exercicio 3
+
+### Exiba uma lista com os títulos dos cursos e o tipo de curso ao lado;
+```sql
+SELECT cursos.nome, tipo.tipo
+FROM cursos
+INNER JOIN tipo 
+ON cursos.tipo_id = tipo.tipo_id;
+```
+
+### Exiba uma lista com os títulos dos cursos, tipo do curso, nome do instrutor responsável pelo mesmo e telefone;
+```sql
+SELECT cursos.nome, tipo.tipo, instrutor.nome, instrutor.telefone
+FROM cursos
+JOIN tipo ON cursos.tipo_id = tipo.tipo_id
+JOIN instrutor ON cursos.instrutor_id = instrutor.instrutor_id;
+``` 
+
+### Crie uma visão que traga o título e valor somente dos cursos de programação;
+```sql
+create view nome_valor as 
+select nome, valor
+from cursos
+where tipo_id = 2;
+
+select * from nome_valor;
+```
+
+### Crie uma visão que traga os títulos dos cursos, tipo do curso e nome do instrutor;
+```sql
+create view visualizacao as
+SELECT cursos.nome AS nome_curso, tipo.tipo, instrutor.nome AS nome_instrutor
+FROM cursos
+JOIN tipo ON cursos.tipo_id = tipo.tipo_id
+JOIN instrutor ON cursos.instrutor_id = instrutor.instrutor_id;
+
+select * from visualizacao;
+```
+
+## *Exercicio 4
 
 
-**Visualização de Dashboard em PowerBi**
+### Exiba a quantidade de cursos que já foram vendidos;
+```sql
+SELECT count(nome) FROM cursos;
+```
 
-<img src="img/print dash_f1.png" align="center" width="900">
+### Exiba o valor total já arrecadado pelos cursos vendidos; 
+```sql
+SELECT ROUND(SUM(cursos.valor),2) AS total_arrecadado
+FROM aluno
+INNER JOIN cursos ON aluno.curso_id = cursos.curso_id;
+```
 
-## Subtitle PT-EN
+### Exiba o valor do curso mais caro; 
+```sql
+SELECT MAX(valor) AS Curso_mais_caro
+FROM cursos;
+```
 
-1. PILOTOS = PILOT (F1 DRIVER)
-2. NOME = NAME
-3. SOBRENOME = LAST NAME
-4. NACIONALIDADE = NATIONALITY
-5. NASCIMENTO = BIRTH
-6. SALARIO = SALARY
-7. BONUS = BONUS 
-8. EQUIPE = TEAM
-9. NASC = SHORT FOR NASCIMENTO
-10. SALÁRIO TOTAL = TOTAL SALARY 
-11. MÉDIA SALARIAL = AVERAGE WAGE
-12. IDADE = AGE
+### Exiba o valor do curso mais barato;
+```sql
+SELECT MIN(valor) AS Curso_mais_barato
+FROM cursos;
+```
 
+### Exiba os nomes dos instrutores e a quantidade de cursos que cada um tem sob sua responsabilidade; 
+```sql
+SELECT instrutor.nome, count(cursos.nome) 
+FROM instrutor
+INNER JOIN cursos ON cursos.instrutor_id = instrutor.instrutor_id
+GROUP BY instrutor.nome;
+```
+ 
+### Exiba apenas os e-mails que tem dominio gmail;
+```sql
+SELECT nome, email
+FROM aluno
+WHERE email LIKE '%@gmail.com';
+```
 
+### Exiba os nomes dos cursos de Java;
+```sql
+SELECT nome
+FROM cursos
+WHERE nome LIKE 'java%';
+```
 
+### Utilizando subquery e o parâmetro IN, exiba os nomes dos cursos disponibilizados cujo tipo de curso seja 'Programação'; 
+```sql
+SELECT cursos.nome, tipo.tipo
+FROM cursos
+INNER JOIN tipo ON cursos.tipo_id = tipo.tipo_id
+WHERE tipo.tipo_id IN (SELECT tipo_id FROM tipo WHERE tipo_id=2);
 
+# usando join
+SELECT cursos.nome, tipo.tipo
+FROM cursos 
+INNER JOIN tipo ON tipo.tipo_id = cursos.tipo_id
+WHERE tipo.tipo = 'Programação';
+```
 
-
-
-
-
-
-
-
-
+### Utilizando subquery e o parâmetro EXISTS, exiba novamente os nomes dos cursos disponibilizados cujo tipo de curso seja 'Programação'; 
+```sql
+SELECT cursos.nome, tipo.tipo
+FROM cursos
+INNER JOIN tipo ON cursos.tipo_id = tipo.tipo_id
+WHERE EXISTS (SELECT tipo_id FROM tipo WHERE tipo_id=2 and cursos.tipo_id = tipo.tipo_id);
+```
